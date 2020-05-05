@@ -606,7 +606,9 @@ class PostInstallFstab(PostInstallStep):
                 appends.append(desc)
                 appends.append(i.format(buuid, fs, ext4_ops))
                 continue
-            if disk.type == "gpt" and strat.is_uefi():
+            if disk.type == "gpt" and strat.is_uefi() and not strat.use_lvm2:
+                # systemd + systemd-boot will automagically detect gpt swap partitions using systemd-gpt-auto-generator
+                # but not LVM swap partitions, which must be loaded in fstab
                 continue
 
             # All swap handling from hereon out
